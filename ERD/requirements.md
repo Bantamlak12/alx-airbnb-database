@@ -10,7 +10,7 @@ This ERD visually represents all entities, their attributes, and relationships a
 
 ## 📉 ERD (Entity Relationship Diagram)
 
-![Airbnb ERD](./ERD.png)
+![Airbnb ERD](./ERD.jpg)
 
 ---
 
@@ -83,4 +83,3 @@ This ERD visually represents all entities, their attributes, and relationships a
 - `recipient_id` (UUID, FK → User.user_id)
 - `message_body` (TEXT, NOT NULL)
 - `sent_at` (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP)
-
