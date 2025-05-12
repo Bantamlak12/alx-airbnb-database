@@ -23,14 +23,14 @@ DROP TABLE IF EXISTS Role;
 -- Create Role table
 CREATE TABLE
     Role (
-        id UUID PRIMARY KEY,
+        id VARCHAR(36) PRIMARY KEY,
         role_name VARCHAR(50) UNIQUE NOT NULL
     );
 
 -- Create Location table
 CREATE TABLE
     Location (
-        id UUID PRIMARY KEY,
+        id VARCHAR(36) PRIMARY KEY,
         city VARCHAR(50) NOT NULL,
         state VARCHAR(50) NOT NULL,
         country VARCHAR(50) NOT NULL,
@@ -41,22 +41,22 @@ CREATE TABLE
 -- Create Status table
 CREATE TABLE
     Status (
-        id UUID PRIMARY KEY,
+        id VARCHAR(36) PRIMARY KEY,
         status_name VARCHAR(50) NOT NULL UNIQUE
     );
 
 -- Create Payment_Method table
 CREATE TABLE
     Payment_Method (
-        id UUID PRIMARY key,
+        id VARCHAR(36) PRIMARY key,
         method_name VARCHAR(50) NOT NULL UNIQUE
     );
 
 -- Create User table
 CREATE TABLE
     User (
-        id UUID PRIMARY KEY,
-        role_id UUID NOT NULL,
+        id VARCHAR(36) PRIMARY KEY,
+        role_id VARCHAR(36) NOT NULL,
         first_name VARCHAR(50) NOT NULL,
         last_name VARCHAR(50) NOT NULL,
         email VARCHAR(100) NOT NULL UNIQUE,
@@ -72,9 +72,9 @@ CREATE TABLE
 -- Create Property table
 CREATE TABLE
     Property (
-        id UUID PRIMARY key,
-        host_id UUID NOT NULL,
-        location_id UUID NOT NULL,
+        id VARCHAR(36) PRIMARY key,
+        host_id VARCHAR(36) NOT NULL,
+        location_id VARCHAR(36) NOT NULL,
         name VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
         price_per_night DECIMAL(10, 2) NOT NULL,
@@ -92,10 +92,10 @@ CREATE TABLE
 -- Create Booking table
 CREATE TABLE
     Booking (
-        id UUID PRIMARY key,
-        user_id UUID NOT NULL,
-        property_id UUID NOT NULL,
-        status_id UUID NOT NULL,
+        id VARCHAR(36) PRIMARY KEY,
+        user_id VARCHAR(36) NOT NULL,
+        property_id VARCHAR(36) NOT NULL,
+        status_id VARCHAR(36) NOT NULL,
         start_date DATE NOT NULL,
         end_date DATE NOT NULL,
         total_price DECIMAL(10, 2) NOT NULL,
@@ -116,9 +116,9 @@ CREATE TABLE
 -- Create Payment table
 CREATE TABLE
     Payment (
-        id UUID PRIMARY KEY,
-        booking_id UUID NOT NULL,
-        payment_method_id UUID NOT NULL,
+        id VARCHAR(36) PRIMARY KEY,
+        booking_id VARCHAR(36) NOT NULL,
+        payment_method_id VARCHAR(36) NOT NULL,
         amount DECIMAL(10, 2) NOT NULL,
         payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         -- Foreign Key constraints
@@ -135,9 +135,9 @@ CREATE TABLE
 --  Create Review table
 CREATE TABLE
     Review (
-        id UUID PRIMARY KEY,
-        property_id UUID NOT NULL,
-        user_id UUID NOT NULL,
+        id VARCHAR(36) PRIMARY KEY,
+        property_id VARCHAR(36) NOT NULL,
+        user_id VARCHAR(36) NOT NULL,
         rating INTEGER NOT NULL,
         comment TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -158,9 +158,9 @@ CREATE TABLE
 -- Create Message table
 CREATE TABLE
     Message (
-        id UUID PRIMARY KEY,
-        sender_id UUID NOT NULL,
-        recipient_id UUID NOT NULL,
+        id VARCHAR(36) PRIMARY KEY,
+        sender_id VARCHAR(36) NOT NULL,
+        recipient_id VARCHAR(36) NOT NULL,
         message_body TEXT NOT NULL,
         sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         -- Foreign key constraints
