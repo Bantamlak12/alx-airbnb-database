@@ -56,13 +56,13 @@ CREATE TABLE
 CREATE TABLE
     User (
         id VARCHAR(36) PRIMARY KEY,
-        role_id VARCHAR(36) NOT NULL,
         first_name VARCHAR(50) NOT NULL,
         last_name VARCHAR(50) NOT NULL,
         email VARCHAR(100) NOT NULL UNIQUE,
         password_hash VARCHAR(100) NOT NULL,
         phone_number VARCHAR(20),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        role_id VARCHAR(36) NOT NULL,
         -- Foreign key constraint
         CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES Role (id),
         -- Indexing email
@@ -73,13 +73,13 @@ CREATE TABLE
 CREATE TABLE
     Property (
         id VARCHAR(36) PRIMARY key,
-        host_id VARCHAR(36) NOT NULL,
-        location_id VARCHAR(36) NOT NULL,
         name VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
         price_per_night DECIMAL(10, 2) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        host_id VARCHAR(36) NOT NULL,
+        location_id VARCHAR(36) NOT NULL,
         -- Foregin key constraints
         CONSTRAINT fk_property_host FOREIGN KEY (host_id) REFERENCES User (id),
         CONSTRAINT fk_property_location FOREIGN KEY (location_id) REFERENCES Location (id),
@@ -93,13 +93,13 @@ CREATE TABLE
 CREATE TABLE
     Booking (
         id VARCHAR(36) PRIMARY KEY,
-        user_id VARCHAR(36) NOT NULL,
-        property_id VARCHAR(36) NOT NULL,
         status_id VARCHAR(36) NOT NULL,
         start_date DATE NOT NULL,
         end_date DATE NOT NULL,
         total_price DECIMAL(10, 2) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        user_id VARCHAR(36) NOT NULL,
+        property_id VARCHAR(36) NOT NULL,
         -- Foreign key constraints
         CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES User (id),
         CONSTRAINT fk_booking_property FOREIGN KEY (property_id) REFERENCES Property (id),
@@ -117,10 +117,10 @@ CREATE TABLE
 CREATE TABLE
     Payment (
         id VARCHAR(36) PRIMARY KEY,
-        booking_id VARCHAR(36) NOT NULL,
-        payment_method_id VARCHAR(36) NOT NULL,
         amount DECIMAL(10, 2) NOT NULL,
         payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        booking_id VARCHAR(36) NOT NULL,
+        payment_method_id VARCHAR(36) NOT NULL,
         -- Foreign Key constraints
         CONSTRAINT fk_payment_booking FOREIGN KEY (booking_id) REFERENCES Booking (id),
         CONSTRAINT fk_payment_method FOREIGN KEY (payment_method_id) REFERENCES Payment_Method (id),
@@ -136,11 +136,11 @@ CREATE TABLE
 CREATE TABLE
     Review (
         id VARCHAR(36) PRIMARY KEY,
-        property_id VARCHAR(36) NOT NULL,
-        user_id VARCHAR(36) NOT NULL,
         rating INTEGER NOT NULL,
         comment TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        property_id VARCHAR(36) NOT NULL,
+        user_id VARCHAR(36) NOT NULL,
         -- Foreign key constraints
         CONSTRAINT fk_review_property FOREIGN KEY (property_id) REFERENCES Property (id),
         CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES User (id),
@@ -159,10 +159,10 @@ CREATE TABLE
 CREATE TABLE
     Message (
         id VARCHAR(36) PRIMARY KEY,
-        sender_id VARCHAR(36) NOT NULL,
-        recipient_id VARCHAR(36) NOT NULL,
         message_body TEXT NOT NULL,
         sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        sender_id VARCHAR(36) NOT NULL,
+        recipient_id VARCHAR(36) NOT NULL,
         -- Foreign key constraints
         CONSTRAINT fk_message_sender FOREIGN KEY (sender_id) REFERENCES User (id),
         CONSTRAINT fk_message_recipient FOREIGN KEY (recipient_id) REFERENCES User (id),
@@ -195,3 +195,4 @@ VALUES
     (UUID (), 'credit_card'),
     (UUID (), 'paypal'),
     (UUID (), 'stripe');
+    
