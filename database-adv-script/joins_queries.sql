@@ -2,19 +2,19 @@
 SELECT
     *
 FROM
-    booking
-    INNER JOIN user ON booking.user_id = user.id;
+    bookings
+    INNER JOIN users ON bookings.user_id = users.id;
 
 -- Retrieving all properties and their reviews, including properties that have no reviews.
 SELECT
     *
 FROM
-    property
-    LEFT JOIN review ON property.id = review.property_id;
+    properties
+    LEFT JOIN reviews ON properties.id = reviews.property_id;
 
 -- Retrieve all users and all bookings, even if the user has no booking or booking is not linked to user.
 SELECT
     *
 FROM
-    user
-    FULL OUTER JOIN booking ON user.id = booking.user_id;
+    users
+    FULL OUTER JOIN bookings ON users.id = bookings.user_id;
