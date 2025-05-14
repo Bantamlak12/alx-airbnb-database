@@ -1,35 +1,35 @@
 -- Drop table if they exists to avoid conflicts (Note: be careful while in production)
 -- Execute in reverse order of dependencies to avoid foreign key constraint errors
-DROP TABLE IF EXISTS Message;
+DROP TABLE IF EXISTS message;
 
-DROP TABLE IF EXISTS Review;
+DROP TABLE IF EXISTS review;
 
-DROP TABLE IF EXISTS Payment;
+DROP TABLE IF EXISTS payment;
 
-DROP TABLE IF EXISTS Booking;
+DROP TABLE IF EXISTS booking;
 
-DROP TABLE IF EXISTS Property;
+DROP TABLE IF EXISTS property;
 
-DROP TABLE IF EXISTS User;
+DROP TABLE IF EXISTS user;
 
-DROP TABLE IF EXISTS Location;
+DROP TABLE IF EXISTS location;
 
-DROP TABLE IF EXISTS Status;
+DROP TABLE IF EXISTS status;
 
-DROP TABLE IF EXISTS Payment_Method;
+DROP TABLE IF EXISTS payment_method;
 
-DROP TABLE IF EXISTS Role;
+DROP TABLE IF EXISTS role;
 
--- Create Role table
+-- Create role table
 CREATE TABLE
-    Role (
+    role (
         id VARCHAR(36) PRIMARY KEY,
         role_name VARCHAR(50) UNIQUE NOT NULL
     );
 
--- Create Location table
+-- Create location table
 CREATE TABLE
-    Location (
+    location (
         id VARCHAR(36) PRIMARY KEY,
         city VARCHAR(50) NOT NULL,
         state VARCHAR(50) NOT NULL,
@@ -38,23 +38,23 @@ CREATE TABLE
         INDEX idx_location_composite (city, state, country)
     );
 
--- Create Status table
+-- Create status table
 CREATE TABLE
-    Status (
+    status (
         id VARCHAR(36) PRIMARY KEY,
         status_name VARCHAR(50) NOT NULL UNIQUE
     );
 
--- Create Payment_Method table
+-- Create payment_method table
 CREATE TABLE
-    Payment_Method (
+    payment_method (
         id VARCHAR(36) PRIMARY key,
         method_name VARCHAR(50) NOT NULL UNIQUE
     );
 
--- Create User table
+-- Create user table
 CREATE TABLE
-    User (
+    user (
         id VARCHAR(36) PRIMARY KEY,
         first_name VARCHAR(50) NOT NULL,
         last_name VARCHAR(50) NOT NULL,
@@ -64,14 +64,14 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         role_id VARCHAR(36) NOT NULL,
         -- Foreign key constraint
-        CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES Role (id),
+        CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES role (id),
         -- Indexing email
         INDEX idx_user_email (email)
     );
 
--- Create Property table
+-- Create property table
 CREATE TABLE
-    Property (
+    property (
         id VARCHAR(36) PRIMARY key,
         name VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
@@ -81,17 +81,17 @@ CREATE TABLE
         host_id VARCHAR(36) NOT NULL,
         location_id VARCHAR(36) NOT NULL,
         -- Foregin key constraints
-        CONSTRAINT fk_property_host FOREIGN KEY (host_id) REFERENCES User (id),
-        CONSTRAINT fk_property_location FOREIGN KEY (location_id) REFERENCES Location (id),
+        CONSTRAINT fk_property_host FOREIGN KEY (host_id) REFERENCES user (id),
+        CONSTRAINT fk_property_location FOREIGN KEY (location_id) REFERENCES location (id),
         -- Indexes
         INDEX idx_property_host (host_id),
         INDEX idx_property_location (location_id),
         INDEX idx_property_price (price_per_night)
     );
 
--- Create Booking table
+-- Create booking table
 CREATE TABLE
-    Booking (
+    booking (
         id VARCHAR(36) PRIMARY KEY,
         status_id VARCHAR(36) NOT NULL,
         start_date DATE NOT NULL,
@@ -101,9 +101,9 @@ CREATE TABLE
         user_id VARCHAR(36) NOT NULL,
         property_id VARCHAR(36) NOT NULL,
         -- Foreign key constraints
-        CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES User (id),
-        CONSTRAINT fk_booking_property FOREIGN KEY (property_id) REFERENCES Property (id),
-        CONSTRAINT fk_booking_status FOREIGN KEY (status_id) REFERENCES Status (id),
+        CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES user (id),
+        CONSTRAINT fk_booking_property FOREIGN KEY (property_id) REFERENCES property (id),
+        CONSTRAINT fk_booking_status FOREIGN KEY (status_id) REFERENCES status (id),
         -- Check constraints
         CONSTRAINT chk_booking_dates CHECK (end_date > start_date),
         -- Indexes
@@ -113,17 +113,17 @@ CREATE TABLE
         INDEX idx_booking_dates (start_date, end_date)
     );
 
--- Create Payment table
+-- Create payment table
 CREATE TABLE
-    Payment (
+    payment (
         id VARCHAR(36) PRIMARY KEY,
         amount DECIMAL(10, 2) NOT NULL,
         payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         booking_id VARCHAR(36) NOT NULL,
         payment_method_id VARCHAR(36) NOT NULL,
         -- Foreign Key constraints
-        CONSTRAINT fk_payment_booking FOREIGN KEY (booking_id) REFERENCES Booking (id),
-        CONSTRAINT fk_payment_method FOREIGN KEY (payment_method_id) REFERENCES Payment_Method (id),
+        CONSTRAINT fk_payment_booking FOREIGN KEY (booking_id) REFERENCES booking (id),
+        CONSTRAINT fk_payment_method FOREIGN KEY (payment_method_id) REFERENCES payment_method (id),
         -- Check constrainst
         CONSTRAINT chk_payment_amount CHECK (amount > 0),
         -- Indexes
@@ -132,9 +132,9 @@ CREATE TABLE
         INDEX idx_payment_dates (payment_date)
     );
 
---  Create Review table
+--  Create review table
 CREATE TABLE
-    Review (
+    review (
         id VARCHAR(36) PRIMARY KEY,
         rating INTEGER NOT NULL,
         comment TEXT NOT NULL,
@@ -142,8 +142,8 @@ CREATE TABLE
         property_id VARCHAR(36) NOT NULL,
         user_id VARCHAR(36) NOT NULL,
         -- Foreign key constraints
-        CONSTRAINT fk_review_property FOREIGN KEY (property_id) REFERENCES Property (id),
-        CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES User (id),
+        CONSTRAINT fk_review_property FOREIGN KEY (property_id) REFERENCES property (id),
+        CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES user (id),
         -- Check constraints
         CONSTRAINT chk_review_rating CHECK (
             rating >= 1
@@ -155,17 +155,17 @@ CREATE TABLE
         INDEX idx_review_rating (rating)
     );
 
--- Create Message table
+-- Create message table
 CREATE TABLE
-    Message (
+    message (
         id VARCHAR(36) PRIMARY KEY,
         message_body TEXT NOT NULL,
         sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         sender_id VARCHAR(36) NOT NULL,
         recipient_id VARCHAR(36) NOT NULL,
         -- Foreign key constraints
-        CONSTRAINT fk_message_sender FOREIGN KEY (sender_id) REFERENCES User (id),
-        CONSTRAINT fk_message_recipient FOREIGN KEY (recipient_id) REFERENCES User (id),
+        CONSTRAINT fk_message_sender FOREIGN KEY (sender_id) REFERENCES user (id),
+        CONSTRAINT fk_message_recipient FOREIGN KEY (recipient_id) REFERENCES user (id),
         -- Indexes
         INDEX idx_message_sender (sender_id),
         INDEX idx_message_recipient (recipient_id)
@@ -174,25 +174,24 @@ CREATE TABLE
 -- Insert initial data for reference tables
 -- Insert into ROle table
 INSERT INTO
-    Role (id, role_name)
+    role (id, role_name)
 VALUES
     (UUID (), 'guest'), -- MySQL support UUID(), and PostgreSQL support gen_random_uuid()
     (UUID (), 'host'),
     (UUID (), 'admin');
 
--- Insert into Status table
+-- Insert into status table
 INSERT INTO
-    Status (id, status_name)
+    status (id, status_name)
 VALUES
     (UUID (), 'pending'),
     (UUID (), 'confirmed'),
     (UUID (), 'canceled');
 
--- Insert into Payment_Method table
+-- Insert into payment_method table
 INSERT INTO
-    Payment_Method (id, method_name)
+    payment_method (id, method_name)
 VALUES
     (UUID (), 'credit_card'),
     (UUID (), 'paypal'),
     (UUID (), 'stripe');
-    
