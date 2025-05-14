@@ -14,15 +14,15 @@ DROP TABLE IF EXISTS users;
 
 DROP TABLE IF EXISTS locations;
 
-DROP TABLE IF EXISTS status;
+DROP TABLE IF EXISTS statuses;
 
-DROP TABLE IF EXISTS payment_method;
+DROP TABLE IF EXISTS payment_methods;
 
-DROP TABLE IF EXISTS role;
+DROP TABLE IF EXISTS roles;
 
--- Create role table
+-- Create roles table
 CREATE TABLE
-    role (
+    roles (
         id VARCHAR(36) PRIMARY KEY,
         role_name VARCHAR(50) UNIQUE NOT NULL
     );
@@ -38,16 +38,16 @@ CREATE TABLE
         INDEX idx_location_composite (city, state, country)
     );
 
--- Create status table
+-- Create statuses table
 CREATE TABLE
-    status (
+    statuses (
         id VARCHAR(36) PRIMARY KEY,
         status_name VARCHAR(50) NOT NULL UNIQUE
     );
 
--- Create payment_method table
+-- Create payment_methods table
 CREATE TABLE
-    payment_method (
+    payment_methods (
         id VARCHAR(36) PRIMARY key,
         method_name VARCHAR(50) NOT NULL UNIQUE
     );
@@ -64,7 +64,7 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         role_id VARCHAR(36) NOT NULL,
         -- Foreign key constraint
-        CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES role (id),
+        CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES roles (id),
         -- Indexing email
         INDEX idx_user_email (email)
     );
@@ -103,7 +103,7 @@ CREATE TABLE
         -- Foreign key constraints
         CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES users (id),
         CONSTRAINT fk_booking_property FOREIGN KEY (property_id) REFERENCES properties (id),
-        CONSTRAINT fk_booking_status FOREIGN KEY (status_id) REFERENCES status (id),
+        CONSTRAINT fk_booking_status FOREIGN KEY (status_id) REFERENCES statuses (id),
         -- Check constraints
         CONSTRAINT chk_booking_dates CHECK (end_date > start_date),
         -- Indexes
@@ -118,18 +118,18 @@ CREATE TABLE
     payments (
         id VARCHAR(36) PRIMARY KEY,
         amount DECIMAL(10, 2) NOT NULL,
-        payments_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         booking_id VARCHAR(36) NOT NULL,
-        payments_method_id VARCHAR(36) NOT NULL,
+        payment_method_id VARCHAR(36) NOT NULL,
         -- Foreign Key constraints
         CONSTRAINT fk_payments_booking FOREIGN KEY (booking_id) REFERENCES bookings (id),
-        CONSTRAINT fk_payments_method FOREIGN KEY (payments_method_id) REFERENCES payment_method (id),
+        CONSTRAINT fk_payments_method FOREIGN KEY (payment_method_id) REFERENCES payment_methods (id),
         -- Check constrainst
         CONSTRAINT chk_payments_amount CHECK (amount > 0),
         -- Indexes
         INDEX idx_payments_booking (booking_id),
-        INDEX idx_payments_method (payments_method_id),
-        INDEX idx_payments_dates (payments_date)
+        INDEX idx_payments_method (payment_method_id),
+        INDEX idx_payments_dates (payment_date)
     );
 
 --  Create reviews table
@@ -159,7 +159,7 @@ CREATE TABLE
 CREATE TABLE
     messages (
         id VARCHAR(36) PRIMARY KEY,
-        message_body TEXT NOT NULL,
+        body TEXT NOT NULL,
         sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         sender_id VARCHAR(36) NOT NULL,
         recipient_id VARCHAR(36) NOT NULL,
@@ -174,23 +174,23 @@ CREATE TABLE
 -- Insert initial data for reference tables
 -- Insert into ROle table
 INSERT INTO
-    role (id, role_name)
+    roles (id, role_name)
 VALUES
     (UUID (), 'guest'), -- MySQL support UUID(), and PostgreSQL support gen_random_uuid()
     (UUID (), 'host'),
     (UUID (), 'admin');
 
--- Insert into status table
+-- Insert into statuses table
 INSERT INTO
-    status (id, status_name)
+    statuses (id, status_name)
 VALUES
     (UUID (), 'pending'),
     (UUID (), 'confirmed'),
     (UUID (), 'canceled');
 
--- Insert into payment_method table
+-- Insert into payment_methods table
 INSERT INTO
-    payment_method (id, method_name)
+    payment_methods (id, method_name)
 VALUES
     (UUID (), 'credit_card'),
     (UUID (), 'paypal'),
