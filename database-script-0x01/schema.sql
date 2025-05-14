@@ -1,18 +1,18 @@
 -- Drop table if they exists to avoid conflicts (Note: be careful while in production)
 -- Execute in reverse order of dependencies to avoid foreign key constraint errors
-DROP TABLE IF EXISTS message;
+DROP TABLE IF EXISTS messages;
 
-DROP TABLE IF EXISTS review;
+DROP TABLE IF EXISTS reviews;
 
-DROP TABLE IF EXISTS payment;
+DROP TABLE IF EXISTS payments;
 
-DROP TABLE IF EXISTS booking;
+DROP TABLE IF EXISTS bookings;
 
-DROP TABLE IF EXISTS property;
+DROP TABLE IF EXISTS properties;
 
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS users;
 
-DROP TABLE IF EXISTS location;
+DROP TABLE IF EXISTS locations;
 
 DROP TABLE IF EXISTS status;
 
@@ -27,14 +27,14 @@ CREATE TABLE
         role_name VARCHAR(50) UNIQUE NOT NULL
     );
 
--- Create location table
+-- Create locations table
 CREATE TABLE
-    location (
+    locations (
         id VARCHAR(36) PRIMARY KEY,
         city VARCHAR(50) NOT NULL,
         state VARCHAR(50) NOT NULL,
         country VARCHAR(50) NOT NULL,
-        -- Composite index for location based queries
+        -- Composite index for locations based queries
         INDEX idx_location_composite (city, state, country)
     );
 
@@ -52,9 +52,9 @@ CREATE TABLE
         method_name VARCHAR(50) NOT NULL UNIQUE
     );
 
--- Create user table
+-- Create users table
 CREATE TABLE
-    user (
+    users (
         id VARCHAR(36) PRIMARY KEY,
         first_name VARCHAR(50) NOT NULL,
         last_name VARCHAR(50) NOT NULL,
@@ -69,9 +69,9 @@ CREATE TABLE
         INDEX idx_user_email (email)
     );
 
--- Create property table
+-- Create properties table
 CREATE TABLE
-    property (
+    properties (
         id VARCHAR(36) PRIMARY key,
         name VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
@@ -81,17 +81,17 @@ CREATE TABLE
         host_id VARCHAR(36) NOT NULL,
         location_id VARCHAR(36) NOT NULL,
         -- Foregin key constraints
-        CONSTRAINT fk_property_host FOREIGN KEY (host_id) REFERENCES user (id),
-        CONSTRAINT fk_property_location FOREIGN KEY (location_id) REFERENCES location (id),
+        CONSTRAINT fk_property_host FOREIGN KEY (host_id) REFERENCES users (id),
+        CONSTRAINT fk_property_location FOREIGN KEY (location_id) REFERENCES locations (id),
         -- Indexes
         INDEX idx_property_host (host_id),
         INDEX idx_property_location (location_id),
         INDEX idx_property_price (price_per_night)
     );
 
--- Create booking table
+-- Create bookings table
 CREATE TABLE
-    booking (
+    bookings (
         id VARCHAR(36) PRIMARY KEY,
         status_id VARCHAR(36) NOT NULL,
         start_date DATE NOT NULL,
@@ -101,8 +101,8 @@ CREATE TABLE
         user_id VARCHAR(36) NOT NULL,
         property_id VARCHAR(36) NOT NULL,
         -- Foreign key constraints
-        CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES user (id),
-        CONSTRAINT fk_booking_property FOREIGN KEY (property_id) REFERENCES property (id),
+        CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES users (id),
+        CONSTRAINT fk_booking_property FOREIGN KEY (property_id) REFERENCES properties (id),
         CONSTRAINT fk_booking_status FOREIGN KEY (status_id) REFERENCES status (id),
         -- Check constraints
         CONSTRAINT chk_booking_dates CHECK (end_date > start_date),
@@ -113,28 +113,28 @@ CREATE TABLE
         INDEX idx_booking_dates (start_date, end_date)
     );
 
--- Create payment table
+-- Create payments table
 CREATE TABLE
-    payment (
+    payments (
         id VARCHAR(36) PRIMARY KEY,
         amount DECIMAL(10, 2) NOT NULL,
-        payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        payments_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         booking_id VARCHAR(36) NOT NULL,
-        payment_method_id VARCHAR(36) NOT NULL,
+        payments_method_id VARCHAR(36) NOT NULL,
         -- Foreign Key constraints
-        CONSTRAINT fk_payment_booking FOREIGN KEY (booking_id) REFERENCES booking (id),
-        CONSTRAINT fk_payment_method FOREIGN KEY (payment_method_id) REFERENCES payment_method (id),
+        CONSTRAINT fk_payments_booking FOREIGN KEY (booking_id) REFERENCES bookings (id),
+        CONSTRAINT fk_payments_method FOREIGN KEY (payments_method_id) REFERENCES payment_method (id),
         -- Check constrainst
-        CONSTRAINT chk_payment_amount CHECK (amount > 0),
+        CONSTRAINT chk_payments_amount CHECK (amount > 0),
         -- Indexes
-        INDEX idx_payment_booking (booking_id),
-        INDEX idx_payment_method (payment_method_id),
-        INDEX idx_payment_dates (payment_date)
+        INDEX idx_payments_booking (booking_id),
+        INDEX idx_payments_method (payments_method_id),
+        INDEX idx_payments_dates (payments_date)
     );
 
---  Create review table
+--  Create reviews table
 CREATE TABLE
-    review (
+    reviews (
         id VARCHAR(36) PRIMARY KEY,
         rating INTEGER NOT NULL,
         comment TEXT NOT NULL,
@@ -142,30 +142,30 @@ CREATE TABLE
         property_id VARCHAR(36) NOT NULL,
         user_id VARCHAR(36) NOT NULL,
         -- Foreign key constraints
-        CONSTRAINT fk_review_property FOREIGN KEY (property_id) REFERENCES property (id),
-        CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES user (id),
+        CONSTRAINT fk_reviews_property FOREIGN KEY (property_id) REFERENCES properties (id),
+        CONSTRAINT fk_reviews_user FOREIGN KEY (user_id) REFERENCES users (id),
         -- Check constraints
-        CONSTRAINT chk_review_rating CHECK (
+        CONSTRAINT chk_reviews_rating CHECK (
             rating >= 1
             AND rating <= 5
         ),
         -- Indexes
-        INDEX idx_review_property (property_id),
-        INDEX idx_review_user (user_id),
-        INDEX idx_review_rating (rating)
+        INDEX idx_reviews_property (property_id),
+        INDEX idx_reviews_user (user_id),
+        INDEX idx_reviews_rating (rating)
     );
 
--- Create message table
+-- Create messages table
 CREATE TABLE
-    message (
+    messages (
         id VARCHAR(36) PRIMARY KEY,
         message_body TEXT NOT NULL,
         sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         sender_id VARCHAR(36) NOT NULL,
         recipient_id VARCHAR(36) NOT NULL,
         -- Foreign key constraints
-        CONSTRAINT fk_message_sender FOREIGN KEY (sender_id) REFERENCES user (id),
-        CONSTRAINT fk_message_recipient FOREIGN KEY (recipient_id) REFERENCES user (id),
+        CONSTRAINT fk_message_sender FOREIGN KEY (sender_id) REFERENCES users (id),
+        CONSTRAINT fk_message_recipient FOREIGN KEY (recipient_id) REFERENCES users (id),
         -- Indexes
         INDEX idx_message_sender (sender_id),
         INDEX idx_message_recipient (recipient_id)
