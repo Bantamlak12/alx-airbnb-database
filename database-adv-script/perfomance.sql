@@ -2,20 +2,28 @@
 SELECT
     *
 FROM
-    bookings b
-    LEFT JOIN users u ON b.user_id = u.id
+    users u
+    LEFT JOIN bookings b ON b.user_id = u.id
     LEFT JOIN properties pr ON b.property_id = pr.id
-    LEFT JOIN payments pm ON pm.booking_id = b.id;
+    LEFT JOIN payments pm ON pm.booking_id = b.id
+WHERE
+    u.id = b.user_id
+    AND pr.id = b.property_id
+    AND pm.booking_id = b.id;
 
 -- Analyze the query
 EXPLAIN
 SELECT
     *
 FROM
-    bookings b
-    LEFT JOIN users u ON b.user_id = u.id
+    users u
+    LEFT JOIN bookings b ON b.user_id = u.id
     LEFT JOIN properties pr ON b.property_id = pr.id
-    LEFT JOIN payments pm ON pm.booking_id = b.id;
+    LEFT JOIN payments pm ON pm.booking_id = b.id
+WHERE
+    u.id = b.user_id
+    AND pr.id = b.property_id
+    AND pm.booking_id = b.id;
 
 -- Refactor the query to reduce execution time
 SELECT
@@ -29,5 +37,5 @@ SELECT
 FROM
     bookings b
     JOIN users u ON b.user_id = u.id
-    LEFT JOIN properties pr ON b.property_id = pr.id
-    LEFT JOIN payments pm ON pm.booking_id = b.id;
+    JOIN properties pr ON b.property_id = pr.id
+    JOIN payments pm ON pm.booking_id = b.id;

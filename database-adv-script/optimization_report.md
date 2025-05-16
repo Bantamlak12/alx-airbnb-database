@@ -5,10 +5,14 @@
 ```sql
 SELECT *
 FROM
-    bookings b
-    LEFT JOIN users u ON b.user_id = u.id
+    users u
+    LEFT JOIN bookings b ON b.user_id = u.id
     LEFT JOIN properties pr ON b.property_id = pr.id
-    LEFT JOIN payments pm ON pm.booking_id = b.id;
+    LEFT JOIN payments pm ON pm.booking_id = b.id
+WHERE
+	u.id = b.user_id
+    AND pr.id = b.property_id
+    AND pm.booking_id = b.id;
 
 ````
 
@@ -16,12 +20,9 @@ FROM
 
 ## Issues Identified
 
-* U used `SELECT *`, which can fetch unnecessary data causing extra I/O and memory usage.
+- I used `SELECT *`, which can fetch unnecessary data causing extra I/O and memory usage.
 
-* `EXPLAIN` shows:
-  * Full table scan on `bookings` (`type: ALL`).
-  * Full table scan on `payments` despite index presence.
-  * Efficient joins on `users` and `properties` (`eq_ref` using primary keys).
+- The usage of `LEFT JOIN`, `WHERE`,and `AND` are completely uncessary
 
 ---
 
@@ -38,9 +39,9 @@ SELECT
     pm.amount AS paid_amount,
     pm.payment_date
 FROM bookings b
-LEFT JOIN users u ON b.user_id = u.id
-LEFT JOIN properties pr ON b.property_id = pr.id
-LEFT JOIN payments pm ON pm.booking_id = b.id;
+JOIN users u ON b.user_id = u.id
+JOIN properties pr ON b.property_id = pr.id
+JOIN payments pm ON pm.booking_id = b.id;
 ```
 
 ---
