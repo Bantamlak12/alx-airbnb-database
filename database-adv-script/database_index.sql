@@ -4,7 +4,7 @@ CREATE INDEX idx_booking_user ON bookings (user_id);
 
 CREATE INDEX idx_booking_property ON bookings (property_id);
 
-EXPLAIN
+EXPLAIN ANALYZE
 SELECT
     *
 FROM
