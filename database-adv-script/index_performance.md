@@ -20,12 +20,12 @@ CREATE INDEX idx_booking_property ON bookings (property_id);
 
 ### 🔎 Measure Query Performance
 
-I measured query performance **before and after** using `EXPLAIN`
+I measured query performance **before and after** using `EXPLAIN ANALYZE`
 
 #### 🕵️ Before the Index
 
 ```sql
-EXPLAIN SELECT * FROM properties WHERE name = 'Riverside Retreat';
+EXPLAIN ANALYZE SELECT * FROM properties WHERE name = 'Riverside Retreat';
 ```
 
 Output showed:
@@ -37,7 +37,7 @@ Output showed:
 #### ⚡ After the Index
 
 ```sql
-EXPLAIN SELECT * FROM properties WHERE name = 'Riverside Retreat';
+EXPLAIN ANALYZE SELECT * FROM properties WHERE name = 'Riverside Retreat';
 ```
 
 Output showed:
